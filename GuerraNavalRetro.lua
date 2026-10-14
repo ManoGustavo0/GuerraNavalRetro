@@ -1,7 +1,7 @@
--- Guerra Naval Hub | RetroBox UI 1.5.0 | 113987393426315
+-- Guerra Naval Hub | RetroBox API 2 (stable) | 113987393426315
 local function main()
 if type(setthreadidentity)=='function' then setthreadidentity(8) end
-local RAW = 'https://raw.githubusercontent.com/ManoGustavo0/RetroBox/5eaf95fcf1ad6a50960e8845fd5ae980e837b4ec/RetroBox-UI-v1.1.0/retrobox-ui/RetroBox.lua'
+local LOADER_URL = 'https://raw.githubusercontent.com/ManoGustavo0/RetroBox/main/dist/bootstrap/v2.lua'
 local Players = game:GetService('Players')
 local RS = game:GetService('ReplicatedStorage')
 local player = Players.LocalPlayer
@@ -9,12 +9,12 @@ local env = getgenv()
 if game.PlaceId ~= 113987393426315 then warn('Este script é para Guerra Naval.'); return end
 
 local ok,Library = pcall(function()
-    local chunk,err=loadstring(game:HttpGet(RAW))
+    local chunk,err=loadstring(game:HttpGet(LOADER_URL), '@RetroBox-bootstrap-v2')
     if not chunk then error(err) end
-    return chunk()
+    return chunk({Channel='stable'})
 end)
-if not ok or type(Library)~='table' or Library.Version~='1.5.0' then
-    warn('Falha ao carregar RetroBox 1.5.0: '..tostring(Library)); return
+if not ok or type(Library)~='table' or Library.APIVersion~=2 or type(Library.CreateWindow)~='function' then
+    warn('Falha ao carregar RetroBox API 2: '..tostring(Library)); return
 end
 local modulesOk,dependencies=pcall(function()
     return {
@@ -431,7 +431,7 @@ hub.tasks=tasks
 hub.CollectNow=function() return controls.collectNow:Press() end
 hub.SellNow=function() return controls.sellNow:Press() end
 hub.RewardsNow=function() return controls.rewardsNow:Press() end
-window:Notify({Title='Guerra Naval Hub',Content='RetroBox 1.5 pronta. Coleta e venda periódica têm controles independentes.',Icon='success',Kind='success',Duration=5})
+window:Notify({Title='Guerra Naval Hub',Content='RetroBox '..Library.Version..' pronta. Coleta e venda periódica têm controles independentes.',Icon='success',Kind='success',Duration=5})
 return hub
 end
 task.defer(function()
